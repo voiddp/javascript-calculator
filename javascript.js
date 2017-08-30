@@ -50,3 +50,8 @@ document.querySelector(".userInput")
 
 document.querySelector(".calcBtn")
   .addEventListener("click", calculate);
+
+// document.querySelectorAll(".digitBtn")
+//   .addEventListener("click", function () {
+//   console.log(this.innerText);
+// });

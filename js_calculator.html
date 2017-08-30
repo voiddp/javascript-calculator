@@ -7,21 +7,53 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
   <link rel="stylesheet"
     href="style.css">
-  <title>Simple Calculator</title>
+  <title>JavaScript Calculator</title>
 </head>
 
 <body>
 
   <div class="container-fluid">
 
-    <div>
-      <form>
-        <!--make input field read only, only allow entry through pushing buttons-->
-        <input type="text" class="userInput"/>
-        <button type="button" class="calcBtn">Calculate</button>
-      </form>
-    </div>
+    <h1 class="text-center">Calculator</h1>
 
+    <!--think about responsive design-->
+    <div class="row">
+      <div class="mx-auto calcContainer">
+        <form>
+            <div class="screen">
+              <input type="text" class="userInput" readonly/>
+            </div>
+            <div class="buttonGrid">
+              <button type="button" class="clearEntryBtn">CE</button>
+              <button type="button" class="cancelBtn">C</button>
+              <button type="button" class="operatorBtn">+</button>
+            </div>
+            <div class="buttonGrid">
+              <button type="button" class="digitBtn">7</button>
+              <button type="button" class="digitBtn">8</button>
+              <button type="button" class="digitBtn">9</button>
+              <button type="button" class="operatorBtn">-</button>
+            </div>
+            <div class="buttonGrid">
+              <button type="button" class="digitBtn">4</button>
+              <button type="button" class="digitBtn">5</button>
+              <button type="button" class="digitBtn">6</button>
+              <button type="button" class="operatorBtn">X</button>
+            </div>
+            <div class="buttonGrid">
+              <button type="button" class="digitBtn">1</button>
+              <button type="button" class="digitBtn">2</button>
+              <button type="button" class="digitBtn">3</button>
+              <button type="button" class="operatorBtn">÷</button>
+            </div>
+            <div class="buttonGrid">
+              <button type="button" class="digitBtn">0</button>
+              <button type="button" class="operatorBtn">.</button>
+              <button type="button" class="calcBtn">=</button>
+            </div>
+        </form>
+      </div>
+    </div>
 
   </div>
 
