@@ -1,7 +1,6 @@
 function attachListeners () {
   "use strict";
 
-  const userInputScreen = document.querySelector(".userInputScreen");
   const digitBtns = document.querySelectorAll(".digitBtn");
   const operatorBtns = document.querySelectorAll(".operatorBtn");
 
@@ -34,19 +33,22 @@ function digitBtn (clickEvent) {
 
   const userInputScreen = document.querySelector(".userInputScreen");
   const inputArr = userInputScreen.value.split(" ");
-  const btnValue = clickEvent.currentTarget.textContent;
   const lastValue = inputArr[inputArr.length - 1];
+  const btnValue = clickEvent.currentTarget.textContent;
 
   if (userInputScreen.value === "0") {
     userInputScreen.value = "";
   };
 
-  //  if last inputArr item is NaN, add a space
+  //  if the last inputArr item is an operator or a decimal point (i.e. NaN),
+  //  add a space
   if (isNaN(lastValue)) {
     userInputScreen.value = userInputScreen.value + " " + btnValue;
   } else {
     userInputScreen.value = userInputScreen.value + btnValue;
   }
+
+  userInputScreen.focus();
 }
 
 function operatorBtn (clickEvent) {
@@ -56,10 +58,14 @@ function operatorBtn (clickEvent) {
   const inputArr = userInputScreen.value.split(" ");
   const lastValue = inputArr[inputArr.length - 1];
 
-  if (userInputScreen.value === "" || isNaN(lastValue) || lastValue[lastValue.length -1] === ".") return;
+  if (userInputScreen.value === ""
+    || isNaN(lastValue)
+    || lastValue[lastValue.length -1] === ".") return;
 
   userInputScreen.value = userInputScreen.value + " "
     + clickEvent.currentTarget.textContent;
+
+  userInputScreen.focus();
 }
 
 function decimalPntBtn (clickEvent) {
@@ -70,10 +76,14 @@ function decimalPntBtn (clickEvent) {
   const lastValue = inputArr[inputArr.length - 1];
   const btnValue = clickEvent.currentTarget.textContent;
 
-  if (userInputScreen.value === "" || isNaN(lastValue) || isNaN(lastValue + btnValue)) return;
+  if (userInputScreen.value === ""
+    || isNaN(lastValue)
+    || isNaN(lastValue + btnValue)) return;
 
   userInputScreen.value = userInputScreen.value
     + clickEvent.currentTarget.textContent;
+
+  userInputScreen.focus();
 }
 
 function calculate () {
@@ -83,32 +93,37 @@ function calculate () {
   const inputArr = userInputScreen.value.split(" ");
   const lastValue = inputArr[inputArr.length - 1];
   let result = 0;
+  let nxtValue = 0;
 
-  if (isNaN(lastValue) || lastValue === "." || lastValue[lastValue.length -1] === ".") return;
+  if (isNaN(lastValue)
+    || lastValue === "."
+    || lastValue[lastValue.length -1] === ".") return;
 
   // the odd index numbers will be operators
-  // calc in groups of 3 (accumulator, operator & val following operator)
-  result = inputArr.reduce( (accumulator, val, index) => {
+  // calculate in groups of 3 (accumulator, operator & val following operator)
+  result = inputArr.reduce( (accumulator, operator, index) => {
     "use strict";
+
+    // value following the operator
+    nxtValue = inputArr[index + 1];
 
     // check if index is odd, if so value will be an operator,
     // and calculation can be performed
     if (index % 2 !== 0) {
-      switch (val) {
+      switch (operator) {
         case "+":
-          return Number(accumulator) + Number(inputArr[index + 1]);
+          return Number(accumulator) + Number(nxtValue);
           break;
         case "-":
-          return Number(accumulator) - Number(inputArr[index + 1]);
+          return Number(accumulator) - Number(nxtValue);
           break;
         case "x":
-          return Number(accumulator) * Number(inputArr[index + 1]);
+          return Number(accumulator) * Number(nxtValue);
           break;
         case "÷":
-          return Number(accumulator) / Number(inputArr[index + 1]);
+          return Number(accumulator) / Number(nxtValue);
           break;
         default:
-          // throw error?
           return;
       }
     } else return accumulator;
@@ -137,12 +152,16 @@ function clearEntry () {
 
   if (userInputScreen.value === "") return;
 
-  // update the calculator screen
+  // remove the last element in the array of values entered by the user
   inputArr.splice(inputArr.length - 1, 1);
+  // update the calculator screen
   userInputScreen.value = inputArr.join(" ");
+
+  userInputScreen.focus();
 }
 
-// switch last value entered on calculator screen to either negative or positive
+// switch the last value entered on calculator screen to either negative,
+ // or positive
 function convert () {
   "use strict";
 
@@ -161,9 +180,13 @@ function convert () {
     lastValue = lastValue.substr(1);
   }
 
+  // replace the last element in the array of values entered by the user
+  // with the newly converted value
+  inputArr.splice(inputArr.length - 1, 1, lastValue);
   // update the calculator screen
-  userInputScreen.value = inputArr.splice(inputArr.length - 1, 1, lastValue);
   userInputScreen.value = inputArr.join(" ");
+
+  userInputScreen.focus();
 }
 
 // call attach event listeners function
