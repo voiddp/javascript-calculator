@@ -90,7 +90,7 @@ function calculate () {
   "use strict";
 
   const userInputScreen = document.querySelector(".userInputScreen");
-  const inputArr = userInputScreen.value.split(" ");
+  let inputArr = userInputScreen.value.split(" ");
   const lastValue = inputArr[inputArr.length - 1];
   let result = 0;
   let nxtValue = 0;
@@ -98,6 +98,12 @@ function calculate () {
   if (isNaN(lastValue)
     || lastValue === "."
     || lastValue[lastValue.length -1] === ".") return;
+
+  // if the bodmas rule needs to be implemented, call a function which will
+  // return an array which conforms to the rule
+  if (bodmasNeeded(inputArr)) {
+    inputArr = orderOperations(inputArr);
+  }
 
   // the odd index numbers will be operators
   // calculate in groups of 3 (accumulator, operator & val following operator)
@@ -111,17 +117,13 @@ function calculate () {
     // and calculation can be performed
     if (index % 2 !== 0) {
       switch (operator) {
-        case "+":
-          return Number(accumulator) + Number(nxtValue);
+        case "+": return Number(accumulator) + Number(nxtValue);
           break;
-        case "-":
-          return Number(accumulator) - Number(nxtValue);
+        case "-": return Number(accumulator) - Number(nxtValue);
           break;
-        case "x":
-          return Number(accumulator) * Number(nxtValue);
+        case "x": return Number(accumulator) * Number(nxtValue);
           break;
-        case "÷":
-          return Number(accumulator) / Number(nxtValue);
+        case "÷": return Number(accumulator) / Number(nxtValue);
           break;
         default:
           return;
@@ -131,6 +133,58 @@ function calculate () {
 
   // display result on calculator screen
   userInputScreen.value = result;
+}
+
+// return true if the bodmas rule needs to be implemented
+function bodmasNeeded (inputArr) {
+  "use strict";
+
+  if ((inputArr.indexOf("x") !== -1 || inputArr.indexOf("÷") !== -1) &&
+    (inputArr.indexOf("+") !== -1 || inputArr.indexOf("-") !== -1)) {
+      return true;
+    } else {
+      return false;
+    }
+}
+
+// implement BODMAS rules
+function orderOperations (inputArr) {
+  "use strict";
+
+  let cleanedArr = [];
+  let i = 0;
+
+  cleanedArr = inputArr;
+
+  for (i = 0; i < cleanedArr.length; i++) {
+    let val;
+    let newVal = 0;
+
+    if (!bodmasNeeded(cleanedArr)) return cleanedArr;
+
+    val = cleanedArr[i]
+
+    if (i % 2 !== 0 && (val === "x" || val === "÷")) {
+      // if the current value is a multiplication or division operator,
+      // perform that calcuation, and replace it in the array with the
+      // return value - i.e. replace 3 values with a single value
+      switch (val) {
+        case "x":
+          newVal = Number(cleanedArr[i - 1]) * Number(cleanedArr[i + 1]);
+          cleanedArr.splice(i - 1, 3, newVal);
+          break;
+        case "÷":
+          newVal = Number(cleanedArr[i - 1]) / Number(cleanedArr[i + 1]);
+          cleanedArr.splice(i - 1, 3, newVal);
+          break;
+        default: //throw error?
+      }
+      // restart loop from the beginning of the altered array
+      i = -1;
+    }
+  };
+
+  return cleanedArr;
 }
 
 // clears calculator screen
