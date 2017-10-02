@@ -12,6 +12,16 @@ function attachListeners () {
     btn.addEventListener("click", operatorBtn);
   });
 
+// can use the below method to convert the node lists to arrays instead of
+// Array.from which is not compatible with IE even with Babel
+//   Array.prototype.slice.call(digitBtns).forEach( btn => {
+//     btn.addEventListener("click", digitBtn);
+//   });
+
+//   Array.prototype.slice.call(operatorBtns).forEach( btn => {
+//     btn.addEventListener("click", operatorBtn);
+//   });
+
   document.querySelector(".decimalPnt")
     .addEventListener("click", decimalPntBtn);
 
@@ -38,7 +48,7 @@ function digitBtn (clickEvent) {
 
   if (userInputScreen.value === "0") {
     userInputScreen.value = "";
-  };
+  }
 
   //  if the last inputArr item is an operator or a decimal point (i.e. NaN),
   //  add a space
@@ -58,12 +68,10 @@ function operatorBtn (clickEvent) {
   const inputArr = userInputScreen.value.split(" ");
   const lastValue = inputArr[inputArr.length - 1];
 
-  if (userInputScreen.value === ""
-    || isNaN(lastValue)
-    || lastValue[lastValue.length -1] === ".") return;
+  if (userInputScreen.value === "" || isNaN(lastValue) || lastValue[lastValue.length -1] === ".") return;
 
-  userInputScreen.value = userInputScreen.value + " "
-    + clickEvent.currentTarget.textContent;
+  userInputScreen.value = userInputScreen.value + " " +
+    clickEvent.currentTarget.textContent;
 
   userInputScreen.focus();
 }
@@ -76,12 +84,10 @@ function decimalPntBtn (clickEvent) {
   const lastValue = inputArr[inputArr.length - 1];
   const btnValue = clickEvent.currentTarget.textContent;
 
-  if (userInputScreen.value === ""
-    || isNaN(lastValue)
-    || isNaN(lastValue + btnValue)) return;
+  if (userInputScreen.value === "" || isNaN(lastValue) || isNaN(lastValue + btnValue)) return;
 
-  userInputScreen.value = userInputScreen.value
-    + clickEvent.currentTarget.textContent;
+  userInputScreen.value = userInputScreen.value +
+    clickEvent.currentTarget.textContent;
 
   userInputScreen.focus();
 }
@@ -95,9 +101,7 @@ function calculate () {
   let result = 0;
   let nxtValue = 0;
 
-  if (isNaN(lastValue)
-    || lastValue === "."
-    || lastValue[lastValue.length -1] === ".") return;
+  if (isNaN(lastValue) || lastValue === "." || lastValue[lastValue.length -1] === ".") return;
 
   // if the bodmas rule needs to be implemented, call a function which will
   // return an array which conforms to the rule
@@ -108,8 +112,6 @@ function calculate () {
   // the odd index numbers will be operators
   // calculate in groups of 3 (accumulator, operator & val following operator)
   result = inputArr.reduce( (accumulator, operator, index) => {
-    "use strict";
-
     // value following the operator
     nxtValue = inputArr[index + 1];
 
@@ -118,13 +120,9 @@ function calculate () {
     if (index % 2 !== 0) {
       switch (operator) {
         case "+": return Number(accumulator) + Number(nxtValue);
-          break;
         case "-": return Number(accumulator) - Number(nxtValue);
-          break;
         case "x": return Number(accumulator) * Number(nxtValue);
-          break;
         case "÷": return Number(accumulator) / Number(nxtValue);
-          break;
         default:
           return;
       }
@@ -138,7 +136,7 @@ function calculate () {
 // return true if the bodmas rule needs to be implemented
 function bodmasNeeded (inputArr) {
   "use strict";
-
+// additional check to see if regular left-to-right reading of the calculation won't return the right result?
   if ((inputArr.indexOf("x") !== -1 || inputArr.indexOf("÷") !== -1) &&
     (inputArr.indexOf("+") !== -1 || inputArr.indexOf("-") !== -1)) {
       return true;
@@ -157,12 +155,12 @@ function orderOperations (inputArr) {
   cleanedArr = inputArr;
 
   for (i = 0; i < cleanedArr.length; i++) {
-    let val;
+    let val = "";
     let newVal = 0;
 
     if (!bodmasNeeded(cleanedArr)) return cleanedArr;
 
-    val = cleanedArr[i]
+    val = cleanedArr[i];
 
     if (i % 2 !== 0 && (val === "x" || val === "÷")) {
       // if the current value is a multiplication or division operator,
@@ -182,7 +180,7 @@ function orderOperations (inputArr) {
       // restart loop from the beginning of the altered array
       i = -1;
     }
-  };
+  }
 
   return cleanedArr;
 }
