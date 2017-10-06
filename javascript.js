@@ -12,16 +12,6 @@ function attachListeners () {
     btn.addEventListener("click", operatorBtn);
   });
 
-// can use the below method to convert the node lists to arrays instead of
-// Array.from which is not compatible with IE even with Babel
-//   Array.prototype.slice.call(digitBtns).forEach( btn => {
-//     btn.addEventListener("click", digitBtn);
-//   });
-
-//   Array.prototype.slice.call(operatorBtns).forEach( btn => {
-//     btn.addEventListener("click", operatorBtn);
-//   });
-
   document.querySelector(".decimalPnt")
     .addEventListener("click", decimalPntBtn);
 
@@ -123,8 +113,7 @@ function calculate () {
         case "-": return Number(accumulator) - Number(nxtValue);
         case "x": return Number(accumulator) * Number(nxtValue);
         case "÷": return Number(accumulator) / Number(nxtValue);
-        default:
-          return;
+        default: return accumulator;
       }
     } else return accumulator;
   });
@@ -136,7 +125,7 @@ function calculate () {
 // return true if the bodmas rule needs to be implemented
 function bodmasNeeded (inputArr) {
   "use strict";
-// additional check to see if regular left-to-right reading of the calculation won't return the right result?
+
   if ((inputArr.indexOf("x") !== -1 || inputArr.indexOf("÷") !== -1) &&
     (inputArr.indexOf("+") !== -1 || inputArr.indexOf("-") !== -1)) {
       return true;
@@ -151,6 +140,7 @@ function orderOperations (inputArr) {
 
   let cleanedArr = [];
   let i = 0;
+  const userInputScreen = document.querySelector(".userInputScreen");
 
   cleanedArr = inputArr;
 
@@ -175,7 +165,7 @@ function orderOperations (inputArr) {
           newVal = Number(cleanedArr[i - 1]) / Number(cleanedArr[i + 1]);
           cleanedArr.splice(i - 1, 3, newVal);
           break;
-        default: //throw error?
+        default: userInputScreen.value = "Sorry, an error has occured";
       }
       // restart loop from the beginning of the altered array
       i = -1;
