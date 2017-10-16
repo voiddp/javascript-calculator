@@ -142,7 +142,9 @@ function orderOperations (inputArr) {
   let i = 0;
   const userInputScreen = document.querySelector(".userInputScreen");
 
-  cleanedArr = inputArr;
+  cleanedArr = inputArr.map((val) => {
+    return val;
+  });
 
   for (i = 0; i < cleanedArr.length; i++) {
     let val = "";
