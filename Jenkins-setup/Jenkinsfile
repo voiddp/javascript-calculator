@@ -3,6 +3,8 @@ pipeline {
 		registry = 'voiddp/nginx-calc'
 		registryCredential = 'dockerhub'
 		dockerImage = ''
+		ec2-credential = 'jenkins-ec2'
+		server-deploy = '18.191.231.44'
 	}
   agent any
   stages {
@@ -13,7 +15,7 @@ pipeline {
     }
     stage('Processing Files') {
       steps {
-          sh 'chmod +x ./Jenkins-setup/build.sh'
+          sh 'chmod +x ./Jenkins-setup/*.sh'
 		  sh './Jenkins-setup/build.sh'
       }
     }
@@ -31,6 +33,13 @@ pipeline {
 		}
 		sh "docker rmi $registry:$BUILD_NUMBER"
       }
-    }	
+    }
+	stage('Deploy to EC2') {
+		steps {
+			sshagent(['ec2-credential']) {
+				sh "ssh ec2-user@$server-deploy 'bash -s' < deploy.sh calc $registry $BUILD_NUMBER"
+			}
+		}
+	}
   }
 }
