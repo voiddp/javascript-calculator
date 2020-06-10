@@ -6,5 +6,12 @@ pipeline {
         git 'https://github.com/voiddp/javascript-calculator.git'
       }
     }
+    stage('listing files') {
+      steps {
+        script {
+          ls -r
+        }
+      }
+    }
   }
 }
