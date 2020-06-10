@@ -1,4 +1,8 @@
 pipeline {
+	environment {
+		registry = "voiddp/nginx-calc"
+		registryCredential = 'dockerhub'
+	}
   agent any
   stages {
     stage('Cloning Git') {
@@ -12,10 +16,6 @@ pipeline {
 		  sh './Jenkins-setup/build.sh'
       }
     }
-	environment {
-		registry = "voiddp/nginx-calc"
-		registryCredential = 'dockerhub'
-	}	
 	stage('Bulding Image') {
       steps {
 	   sh 'docker build -t "$registry:$BUILD_NUMBER" -f ./Jenkins-setup/Dockerfile .'
@@ -26,7 +26,6 @@ pipeline {
 		sh 'docker push $registry:$BUILD_NUMBER'
 		sh 'docker rmi $registry:$BUILD_NUMBER'
       }
-    }
-	
+    }	
   }
 }
