@@ -8,9 +8,7 @@ pipeline {
     }
     stage('listing files') {
       steps {
-        script {
-          ls -r
-        }
+          sh "ls -r"
       }
     }
   }
