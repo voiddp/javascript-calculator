@@ -14,7 +14,7 @@ pipeline {
     }
 	stage('Buld image with docker') {
       steps {
-	   sh 'docker build -t nginx:calc ./Jenkins-setup'
+	   sh 'docker build -t nginx:calc -f ./Jenkins-setup/Dockerfile .'
       }
     }
 	
