@@ -10,7 +10,7 @@ pipeline {
       steps {
           sh '''#!/bin/bash
              if [ ! -d ./Build ]; then mkdir Build; fi;
-             ls | grep -v 'Docker\|Jenkins' | cp ./Build/
+             ls | grep -v 'Docker\\|Jenkins' | cp ./Build/
              mv ./Build/js_calculator.html ./Build/index.html
              '''
       }
