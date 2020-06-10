@@ -6,6 +6,5 @@ pipeline {
         git 'https://github.com/voiddp/javascript-calculator.git'
       }
     }
-
   }
 }
