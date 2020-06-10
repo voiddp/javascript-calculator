@@ -12,5 +12,14 @@ pipeline {
 		  sh './Jenkins-setup/build.sh'
       }
     }
+	stage('docker buld') {
+	  agent {
+		docker { image 'docker:stable' }
+            }
+      steps {
+	   sh 'docker build -t "nginx-calc:Jenkins-setup/Dockerfile"'
+      }
+    }
+	
   }
 }
