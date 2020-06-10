@@ -3,7 +3,7 @@ pipeline {
 		registry = 'voiddp/nginx-calc'
 		registryCredential = 'dockerhub'
 		dockerImage = ''
-		server-deploy = '18.191.231.44'
+		serverDeploy = '18.191.231.44'
 	}
   agent any
   stages {
@@ -36,7 +36,7 @@ pipeline {
 	stage('Deploy to EC2') {
 		steps {
 			sshagent(['jenkins-ec2']) {
-				sh "ssh ec2-user@$server-deploy 'bash -s' < deploy.sh calc $registry $BUILD_NUMBER"
+				sh "ssh ec2-user@$serverDeploy 'bash -s' < deploy.sh calc $registry $BUILD_NUMBER"
 			}
 		}
 	}
