@@ -6,9 +6,13 @@ pipeline {
         git 'https://github.com/voiddp/javascript-calculator.git'
       }
     }
-    stage('listing files') {
+    stage('Files in Build') {
       steps {
-          sh "ls -r"
+          sh '''#!/bin/bash
+             if [ ! -d ./Build ]; then mkdir Build; fi;
+             ls | grep -v 'Docker\|Jenkins' | cp ./Build/
+             mv ./Build/js_calculator.html ./Build/index.html
+             '''
       }
     }
   }
