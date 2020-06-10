@@ -1,6 +1,5 @@
 #!/bin/bash
-builddir="./Build"
-rm $builddir -vr
+rm ./Build -vr
 if [ ! -d ./Build ]; then mkdir Build; fi;
-find . -not \( -path $builddir -prune \) -not \( -path ./Jenkins-setup -prune \) -not \( -path ./.git -prune \) -type f -exec cp -rv {} ./Build \;
+rsync -av --exclude '.git' --exclude 'Jenkins-setup' . ./Build
 
