@@ -19,13 +19,13 @@ case ${1} in
 		do 
 			docker image inspect ${image} > /dev/null 2>&1 && docker rmi -f ${image}
 		done
-		#if [ $# -eq 3 ]
-		#then
-		#	for container in $(docker ps -aq --filter "name=${3}")
-		#	do 
-		#		docker stop ${container} && docker rm -fv ${container}
-		#	done
-		#fi
+		if [ $# -eq 3 ]
+		then
+			for container in $(docker ps -aq --filter "name=${3}")
+			do 
+				docker stop ${container} && docker rm -fv ${container}
+			done
+		fi
 	;;
 	#if nothing from above - error
 	*) 

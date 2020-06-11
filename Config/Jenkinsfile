@@ -7,6 +7,7 @@ pipeline {
 		configFolder = 'Config/'
 		appFolder = 'App/'
 		proxyFolder = 'Proxy/'
+		composeFolder='Compose/'
 	}
   agent any
   stages {
@@ -17,29 +18,30 @@ pipeline {
 //    }
     stage('Processing Files') {
       steps {
-          sh 'chmod +x ./Config/*.sh'
-		  sh './Config/build.sh files'
+          sh 'chmod +x ./${configFolder}*.sh'
+		  sh './${configFolder}build.sh files'
       }
     }
 	stage('Bulding Image') {
       steps {
-	   sh './Config/build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile .'
+	   sh './${configFolder}build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile .'
       }
     }	
 	stage('Push to Hub') {
       steps {
-		script {			
-			docker.withRegistry( '', dhRegistryCredential ) {
-				docker.image('$dhAppRegistry:$BUILD_NUMBER').push()
-			}
-		}
+//		script {			
+//			docker.withRegistry( '', dhRegistryCredential ) {
+//				docker.image('$dhAppRegistry:$BUILD_NUMBER').push()
+//			}
+//		}
 		sh './Config/build.sh clean ${dhAppRegistry}'
       }
     }
 	stage('Deploy to EC2') {
 		steps {
 			sshagent(['jenkins-ec2']) {
-				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}"
+				sh "rsync -e \\"ssh -o StrictHostKeyChecking=no\\" -av ${configFolder}${composeFolder} ec2-user@$/home/ec2-user'
+//				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}"
 			}
 		}
 	}
