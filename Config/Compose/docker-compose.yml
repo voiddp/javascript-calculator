@@ -1,10 +1,10 @@
 version: '3'
 services:
    calc:
-     image: "${repo}:${build}"
+     image: "${build}"
      container_name: calc
      ports:
-      - 3000:3000
+      - 3000:80
    proxy:
      build:
        context: .
