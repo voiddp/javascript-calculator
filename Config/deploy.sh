@@ -23,7 +23,7 @@ case ${1} in
 			sudo chmod +x /usr/local/bin/docker-compose
 		fi
 		#checking build.latest file, and removing previous build if exist
-		if [ ! -f build.latest ] || build=$(cat build.latest) docker-compose down --rmi all
+		[ ! -f build.latest ] || build=$(cat build.latest) docker-compose down --rmi all
 		build="${2}" docker-compose up -d
 		echo ${2} > build.latest
 	;;
