@@ -5,8 +5,8 @@ case ${1} in
 		rsync -e "ssh -o StrictHostKeyChecking=no" -av ${4} ${2}@${3}:/home/${2}
 	;;
 	# 1=compose 2=repository:build
-	compose)
-		echo composing
+	deploy)
+		sudo echo composing
 		[ ! -f build.latest ] || build=$(cat build.latest) docker-compose down --rmi all
 		build="${2}" docker-compose up -d
 		echo ${2} > build.latest
