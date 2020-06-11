@@ -11,14 +11,15 @@ case ${1} in
 	;;
 	#parameters should be 1=build 2=Repository:Tag 3=Dockerfile 4=context
 	build) 
-		docker build -t "${2}" -f ${3} ${4}
+		#docker build -t "${2}" -f ${3} ${4}
 	;;
 	#clearing up all images and containers parameters: 1=clean 2=Repository 3=ContainerName
 	clean) 
 		for image in $(docker images -aq "${2}:*")
 		do 
-			docker rmi -f ${image}
+			echo $image #docker rmi -f ${image}
 		done
+		exit 1
 		#if [ $# -eq 3 ]
 		#then
 		#	for container in $(docker ps -aq --filter "name=${3}")
