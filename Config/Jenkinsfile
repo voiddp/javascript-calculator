@@ -30,10 +30,10 @@ pipeline {
       steps {
 		script {			
 			docker.withRegistry( '', {dhRegistryCredential} ) {
-				docker.image('${dhRegistry}:${BUILD_NUMBER}').push()
+				docker.image('$dhRegistry:$BUILD_NUMBER').push()
 			}
 		}
-		sh "docker rmi ${dhRegistry}:${BUILD_NUMBER}"
+		sh "for image in $(docker images -aq "${dhRegistry}:*"); do; docker rmi -f ${image}; done"
       }
     }
 	stage('Deploy to EC2') {
