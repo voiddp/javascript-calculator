@@ -23,7 +23,7 @@ pipeline {
     }
 	stage('Bulding Image') {
       steps {
-	   sh 'docker build -t "${dhRegistry}:$BUILD_NUMBER" -f ./${configFolder}${App}Dockerfile .'
+	   sh 'docker build -t "${dhRegistry}:$BUILD_NUMBER" -f ./${configFolder}${appFolder}Dockerfile .'
       }
     }	
 	stage('Push to Hub') {
