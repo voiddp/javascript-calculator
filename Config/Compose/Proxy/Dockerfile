@@ -1,6 +1,6 @@
 FROM nginx:1.19.0-alpine
 
-ADD ./Config/Proxy/nginx.conf /etc/nginx/conf.d/default.conf
+ADD ngingx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

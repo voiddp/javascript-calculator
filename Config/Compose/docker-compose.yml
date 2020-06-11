@@ -1,12 +1,16 @@
+version: '3'
 services:
-    calc: "${repo}:${build}"
-        container_name: calc
-        ports:
-            - 3000:3000
-    proxy:
-        build: "${proxyFolder}"
-        container_name: proxy
-        ports:
-        - 80:80
-        links:
-        - calc
+   calc:
+     image: "${repo}:${build}"
+     container_name: calc
+     ports:
+      - 3000:3000
+   proxy:
+     build:
+       context: .
+       dockerfile: Proxy/Dockerfile
+     container_name: proxy
+     ports:
+      - 80:80
+     links:
+      - calc
