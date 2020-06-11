@@ -40,7 +40,7 @@ pipeline {
 	stage('Deploy to EC2') {
 		steps {
 			sshagent(['jenkins-ec2']) {
-				sh "rsync -e \\"ssh -o StrictHostKeyChecking=no\\" -av ${configFolder}${composeFolder} ec2-user@$/home/ec2-user'
+				sh './${configFolder}deploy.sh copy ec2-user ${srvDeploy} ${configFolder}${composeFolder}'
 //				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}"
 			}
 		}
