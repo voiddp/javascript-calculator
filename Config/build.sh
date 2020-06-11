@@ -19,9 +19,9 @@ case ${1} in
 		do 
 			docker rmi -f ${image}
 		done
-		if [$# -eq 3] 
+		if [[ ${#} -eq 3 ]]
 		then
-			for container in $(docker ps -aq --filter "name=$3")
+			for container in $(docker ps -aq --filter "name=${3}")
 			do 
 				docker stop ${container} && docker rm -fv ${container}
 			done
