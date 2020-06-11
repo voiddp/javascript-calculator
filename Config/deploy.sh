@@ -6,8 +6,24 @@ case ${1} in
 	;;
 	# 1=compose 2=repository:build
 	deploy)
-		sudo echo composing
-		[ ! -f build.latest ] || build=$(cat build.latest) docker-compose down --rmi all
+		#check if docker, docker-compose are installed
+		if ! command -v docker >/dev/null 2>&1
+		then
+			echo "#####Updating, and instaling docker:"
+			sudo yum update -y
+			sudo yum install docker -y
+			sudo service docker start
+			sudo chkconfig docker on 
+			sudo usermod -aG docker $USER
+		fi
+		if ! command -v docker-compose >/dev/null 2>&1
+		then
+			echo "#####instaling docker-compose"
+			sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+			sudo chmod +x /usr/local/bin/docker-compose
+		fi
+		#checking build.latest file, and removing previous build if exist
+		if [ ! -f build.latest ] || build=$(cat build.latest) docker-compose down --rmi all
 		build="${2}" docker-compose up -d
 		echo ${2} > build.latest
 	;;
@@ -15,15 +31,3 @@ case ${1} in
 	exit 1
 	;;
 esac
-#echo "deploying docker image $2:$3 into container $1"
-#removing previous containters
-#for container in $(docker ps -aq --filter "name=$1")
-#do 
-#	docker stop ${container} && docker rm -fv ${container}
-#done
-#removing previous images
-#for image in $(docker images -aq "$2:*")
-#do
-#	docker rmi -f ${image}
-#done
-#docker run -d -p 80:80/tcp --name $1 $2:$3
