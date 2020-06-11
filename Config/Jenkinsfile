@@ -41,7 +41,7 @@ pipeline {
 		steps {
 			sshagent(['jenkins-ec2']) {
 				sh './${configFolder}deploy.sh copy ec2-user ${srvDeploy} ${configFolder}${composeFolder}'
-				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh compose ${dhAppRegistry}:${BUILD_NUMBER}"
+				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh deploy ${dhAppRegistry}:${BUILD_NUMBER}"
 			}
 		}
 	}
