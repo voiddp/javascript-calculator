@@ -9,10 +9,12 @@ case ${1} in
 		rsync -av --exclude 'Build' --exclude '.git' --exclude 'Config' . ./Build
 		mv ./Build/js_calculator.html ./Build/index.html
 	;;
-	build) #parameters should be 1=build 2=Repository:Tag 3=Dockerfile 4=context
+	#parameters should be 1=build 2=Repository:Tag 3=Dockerfile 4=context
+	build) 
 		docker build -t "${2}" -f ${3} ${4}
 	;;
-	clearup) #clearing up all images and containers parameters: 1=clearup 2=Repository 3=ContainerName
+	#clearing up all images and containers parameters: 1=clearup 2=Repository 3=ContainerName
+	clean) 
 		for image in $(docker images -aq "${2}:*")
 		do 
 			docker rmi -f ${image}
@@ -25,7 +27,8 @@ case ${1} in
 			done
 		fi
 	;;
-	*) if #if nothing from above - error
+	#if nothing from above - error
+	*) 
 		exit 1
 	;;
-
+esac
