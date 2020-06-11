@@ -33,7 +33,7 @@ pipeline {
 				docker.image('$dhRegistry:$BUILD_NUMBER').push()
 			}
 		}
-		sh "for image in $(docker images -aq "${dhRegistry}:*"); do; docker rmi -f ${image}; done"
+		sh "for image in \$(docker images -aq "${dhRegistry}:*"); do; docker rmi -f "${image}"; done"
       }
     }
 	stage('Deploy to EC2') {
