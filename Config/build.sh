@@ -13,13 +13,13 @@ case ${1} in
 	build) 
 		docker build -t "${2}" -f ${3} ${4}
 	;;
-	#clearing up all images and containers parameters: 1=clearup 2=Repository 3=ContainerName
+	#clearing up all images and containers parameters: 1=clean 2=Repository 3=ContainerName
 	clean) 
 		for image in $(docker images -aq "${2}:*")
 		do 
 			docker rmi -f ${image}
 		done
-		if [[ ${#} -eq 3 ]]
+		if [ $# -eq 3 ]
 		then
 			for container in $(docker ps -aq --filter "name=${3}")
 			do 
