@@ -1,12 +1,12 @@
 services:
-    app: "${repo}:${build}"
-        container_name: "${name}"
+    calc: "${repo}:${build}"
+        container_name: calc
         ports:
             - 3000:3000
     proxy:
-        build: ${proxyFolder}
+        build: "${proxyFolder}"
         container_name: proxy
         ports:
         - 80:80
         links:
-        - app
+        - calc
