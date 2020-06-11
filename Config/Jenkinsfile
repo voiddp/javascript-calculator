@@ -1,0 +1,47 @@
+pipeline {
+	environment {
+		dhRegistry = 'voiddp/nginx-calc'
+		dhRegistryCredential = 'dockerhub'
+		ec2Credential='jenkins-ec2'
+		srvDeploy = '18.191.231.44'
+		configFolder = 'Config/'
+		appFolder = 'App/'
+		proxyFolder = 'Proxy/'
+	}
+  agent any
+  stages {
+//   stage('Cloning Git') {
+//      steps {
+//        git 'https://github.com/voiddp/javascript-calculator.git'
+//     }
+//    }
+    stage('Processing Files') {
+      steps {
+          sh 'chmod +x ./Config/*.sh'
+		  sh './Config/build.sh'
+      }
+    }
+	stage('Bulding Image') {
+      steps {
+	   sh 'docker build -t "${dhRegistry}:$BUILD_NUMBER" -f ./${configFolder}${App}Dockerfile .'
+      }
+    }	
+	stage('Push to Hub') {
+      steps {
+		script {			
+			docker.withRegistry( '', {dhRegistryCredential} ) {
+				docker.image('${dhRegistry}:${BUILD_NUMBER}').push()
+			}
+		}
+		sh "docker rmi ${dhRegistry}:${BUILD_NUMBER}"
+      }
+    }
+	stage('Deploy to EC2') {
+		steps {
+			sshagent([${ec2Credential}]) {
+				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhRegistry} ${BUILD_NUMBER}"
+			}
+		}
+	}
+  }
+}
