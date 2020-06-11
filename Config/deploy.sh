@@ -15,7 +15,7 @@ case ${1} in
 	exit 1
 	;;
 esac
-##echo "deploying docker image $2:$3 into container $1"
+#echo "deploying docker image $2:$3 into container $1"
 #removing previous containters
 #for container in $(docker ps -aq --filter "name=$1")
 #do 
