@@ -1,6 +1,6 @@
 pipeline {
 	environment {
-		dhRegistry = 'voiddp/nginx-calc'
+		dhAppRegistry = 'voiddp/nginx-calc'
 		dhRegistryCredential = 'dockerhub'
 		ec2Credential='jenkins-ec2'
 		srvDeploy = '18.191.231.44'
@@ -18,28 +18,28 @@ pipeline {
     stage('Processing Files') {
       steps {
           sh 'chmod +x ./Config/*.sh'
-		  sh './Config/build.sh'
+		  sh './Config/build.sh files'
       }
     }
 	stage('Bulding Image') {
       steps {
-	   sh 'docker build -t "${dhRegistry}:$BUILD_NUMBER" -f ./${configFolder}${appFolder}Dockerfile .'
+	   sh "./Config/build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile ."
       }
     }	
 	stage('Push to Hub') {
       steps {
 		script {			
 			docker.withRegistry( '', {dhRegistryCredential} ) {
-				docker.image('$dhRegistry:$BUILD_NUMBER').push()
+				docker.image('$dhAppRegistry:$BUILD_NUMBER').push()
 			}
 		}
-		sh "for image in \$(docker images -aq "${dhRegistry}:*"); do; docker rmi -f "${image}"; done"
+		sh '/Config/build.sh clean $dhAppRegistry'
       }
     }
 	stage('Deploy to EC2') {
 		steps {
 			sshagent([${ec2Credential}]) {
-				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhRegistry} ${BUILD_NUMBER}"
+				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}"
 			}
 		}
 	}
