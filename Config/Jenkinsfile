@@ -23,7 +23,7 @@ pipeline {
     }
 	stage('Bulding Image') {
       steps {
-	   sh "./Config/build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile ."
+	   sh './Config/build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile .'
       }
     }	
 	stage('Push to Hub') {
@@ -33,13 +33,13 @@ pipeline {
 				docker.image('$dhAppRegistry:$BUILD_NUMBER').push()
 			}
 		}
-		sh "./Config/build.sh clean ${dhAppRegistry}"
+		sh './Config/build.sh clean ${dhAppRegistry}'
       }
     }
 	stage('Deploy to EC2') {
 		steps {
 			sshagent([${ec2Credential}]) {
-				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}"
+				sh 'ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}'
 			}
 		}
 	}
