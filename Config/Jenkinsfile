@@ -33,7 +33,7 @@ pipeline {
 				docker.image('$dhAppRegistry:$BUILD_NUMBER').push()
 			}
 		}
-		sh "/Config/build.sh clean ${dhAppRegistry}"
+		sh "./Config/build.sh clean ${dhAppRegistry}"
       }
     }
 	stage('Deploy to EC2') {
