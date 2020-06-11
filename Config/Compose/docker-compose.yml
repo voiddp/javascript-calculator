@@ -1,0 +1,12 @@
+services:
+    "${name}": "${repo}:${build}"
+        container_name: 
+        ports:
+            - 3000:3000
+    proxy:
+        build: ${proxyFolder}
+        container_name: proxy
+        ports:
+        - 80:80
+        links:
+        - "${name}"
