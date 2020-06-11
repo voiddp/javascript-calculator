@@ -1,13 +1,13 @@
 #!/bin/bash
 echo "deploying docker image $2:$3 into container $1"
 #removing previous containters
-if docker ps -aq --filter "name=$1"
-then 
-	docker stop $1 && docker rm -fv $1
-fi
+for container in docker ps -aq --filter "name=$1"
+do 
+	docker stop ${container} && docker rm -fv ${container}
+done
 #removing previous images
-if docker images -aq "$2:*"
-then
-	docker rmi -f "$2:*"
-fi
+for image in docker images -aq "$2:*"
+do
+	docker rmi -f ${image}
+done
 docker run -d -p 80:80/tcp --name $1 $2:$3
