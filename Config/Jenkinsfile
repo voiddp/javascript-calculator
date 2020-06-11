@@ -38,8 +38,8 @@ pipeline {
     }
 	stage('Deploy to EC2') {
 		steps {
-			sshagent([${ec2Credential}]) {
-				sh 'ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}'
+			sshagent([$ec2Credential]) {
+				sh "ssh ec2-user@${srvDeploy} -o StrictHostKeyChecking=no 'bash -s' < ./${configFolder}deploy.sh calc ${dhAppRegistry} ${BUILD_NUMBER}"
 			}
 		}
 	}
