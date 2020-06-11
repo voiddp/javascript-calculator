@@ -1,6 +1,6 @@
 services:
-    "${name}": "${repo}:${build}"
-        container_name: 
+    app: "${repo}:${build}"
+        container_name: "${name}"
         ports:
             - 3000:3000
     proxy:
@@ -9,4 +9,4 @@ services:
         ports:
         - 80:80
         links:
-        - "${name}"
+        - app
