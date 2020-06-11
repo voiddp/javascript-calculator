@@ -35,9 +35,8 @@ pipeline {
     }
 	stage('Deploy to EC2') {
 		steps {
-			def ShFileArgs = "./Jenkins-setup/deploy.sh calc $registry $BUILD_NUMBER"
 			sshagent(['jenkins-ec2']) {
-				sh "ssh -i /home/ec2-user/.ssh/jenkins ec2-user@${serverDeploy} 'bash -s' < ${ShFileArgs}"
+				sh "ssh -i /home/ec2-user/.ssh/jenkins ec2-user@${serverDeploy} 'bash -s' < ./Jenkins-setup/deploy.sh calc $registry $BUILD_NUMBER"
 			}
 		}
 	}
