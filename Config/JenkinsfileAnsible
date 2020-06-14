@@ -44,7 +44,7 @@ pipeline {
                     credentialsId: 'awsKey',
                     inventory: '/etc/ansible/ec2.py',
                     playbook: '${configFolder}ansible/DeployProject.yml',
-                    extras: '--extra-vars build=${BUILD_NUMBER} repo=${dhAppRegistry} dcSource=${configFolder}${composeFolder}',
+                    extras: '--extra-vars \\"build=${BUILD_NUMBER} repo=${dhAppRegistry} dcSource=${configFolder}${composeFolder}\\"',
 					hostKeyChecking : 'false'
 				)
 			}
