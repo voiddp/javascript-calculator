@@ -17,11 +17,12 @@
     register: stat_result
     
   - name: Copy Files for docker-compose proxy build
-    synchronize:
+    copy:
       src: "{{ dcSource }}"
       dest: "~"
-      owner: no
-      mode: pull
+      remote_src: yes
+      owner: ec2-user
+      mode: '0600'
     
  # - name: Clear docker-compose
    # shell: build=$(cat build.latest) docker-compose down --rmi all      
