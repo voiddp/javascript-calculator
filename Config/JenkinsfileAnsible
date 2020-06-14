@@ -37,7 +37,7 @@ pipeline {
 		sh './Config/build.sh clean ${dhAppRegistry}'
       }
     }
-	stage('Deploy with Ansible') {
+    stage('Deploy with Ansible') {
 		steps {
 			sshagent(['awsKey']) {
 			    ansiblePlaybook(

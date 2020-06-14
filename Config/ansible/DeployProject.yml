@@ -23,14 +23,14 @@
       owner: ec2-user
       mode: '0600'
     
- # - name: Clear docker-compose
-   # shell: build=$(cat build.latest) docker-compose down --rmi all      
-   # when: stat_result.exists
+ - name: Clear docker-compose
+   shell: build=$(cat build.latest) docker-compose down --rmi all      
+   when: stat_result.exists
     
- # - name: Start docker-compose
-   # shell: |
-       # build={{ build }} docker-compose up -d
-       # echo {{ build }} > build.latest
+ - name: Start docker-compose
+   shell: |
+       build={{ build }} docker-compose up -d
+       echo {{ build }} > build.latest
 
   handlers:
   - name: Install docker-compose
