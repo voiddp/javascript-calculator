@@ -1,0 +1,23 @@
+---
+- name: test
+  hosts: "tag_Name_DockerDeploy"
+  become: yes
+
+  tasks:
+  - name: install docker
+    yum: name=docker state=latest
+    notify: Install docker-compose
+ 
+  - name: start docker service and enable
+    service: name=docker state=started enabled=yes
+
+  - debug: var=shell.stdout_lines
+
+
+  handlers:
+  - name: Install docker-compose
+    shell: |
+        usermod -aG docker $USER
+        curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
+    register: shell
