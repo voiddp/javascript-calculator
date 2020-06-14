@@ -1,6 +1,5 @@
 pipeline {
 	environment {
-	    PATH+EXTRA = '/usr/local/bin/'
 		dhAppRegistry = 'voiddp/nginx-calc'
 		dhRegistryCredential = 'dockerhub'
 		ec2Credential='jenkins-ec2'
