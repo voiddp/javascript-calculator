@@ -1,0 +1,53 @@
+pipeline {
+	environment {
+		dhAppRegistry = 'voiddp/nginx-calc'
+		dhRegistryCredential = 'dockerhub'
+		ec2Credential='jenkins-ec2'
+		srvDeploy = '18.191.231.44'
+		configFolder = 'Config/'
+		appFolder = 'App/'
+		proxyFolder = 'Proxy/'
+		composeFolder='Compose/'
+	}
+  agent any
+  stages {
+//   stage('Cloning Git') {
+//      steps {
+//        git 'https://github.com/voiddp/javascript-calculator.git'
+//     }
+//    }
+    stage('Processing Files') {
+      steps {
+          sh 'chmod +x ./${configFolder}*.sh'
+		  sh './${configFolder}build.sh files'
+      }
+    }
+	stage('Bulding Image') {
+      steps {
+	   sh './${configFolder}build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile .'
+      }
+    }	
+	stage('Push to Hub') {
+      steps {
+		script {			
+			docker.withRegistry( '', dhRegistryCredential ) {
+				docker.image('$dhAppRegistry:$BUILD_NUMBER').push()
+			}
+		}
+		sh './Config/build.sh clean ${dhAppRegistry}'
+      }
+    }
+	stage('Deploy with Ansible') {
+		steps {
+			sshagent(['awsKey']) {
+			    ansiblePlaybook(
+                    credentialsId: 'awsKey',
+                    inventory: '/etc/ansible/ec2.py',
+                    playbook: '${configFolder}ansible/DeployProject.yml',
+                    extras: '--extra-vars build=${dhAppRegistry}:${BUILD_NUMBER} dcSource=${configFolder}${composeFolder}'
+				)
+			}
+		}
+	}
+  }
+}
