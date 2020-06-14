@@ -6,35 +6,49 @@
   tasks:
   - name: install docker
     yum: name=docker state=latest
-    notify: Install docker-compose
- 
+    register: docker_state
+
+  - name: install docker compose
+    shell: |
+       curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
+       chmod +x /usr/bin/docker-compose
+    when: docker_state.changed
+
+  - name: add user to docker group
+    user: name=ec2-user
+          group=docker
+          append=yes
+    register: user_task
+
+  - name: reset ssh sesions
+    meta: reset_connection
+
   - name: start docker service and enable
     service: name=docker state=started enabled=yes
-  
+
   - name: build.latest #check if exist
-    stat: 
+    stat:
       path: build.latest
     register: stat_result
-    
+
   - name: Copy Files for docker-compose proxy build
     copy:
       src: "{{ dcSource }}"
       dest: /home/ec2-user
       owner: ec2-user
       mode: '0600'
-    
+
   - name: Clear docker-compose
-    shell: build=$(cat build.latest) docker-compose down --rmi all      
-    when: stat_result.exists
-    
+    shell: build=$(cat build.latest) docker-compose down --rmi all
+    register: dc_rm
+    when: stat_result.stat.exists
+
+  - debug: var=dc_rm.stdout_lines
+
   - name: Start docker-compose
     shell: |
-       build={{ build }} docker-compose up -d
-       echo {{ build }} > build.latest
+       build={{ repo }}:{{ build  }} docker-compose up -d
+       echo {{ repo }}:{{ build }} > build.latest
+    register: dc
 
-  handlers:
-  - name: Install docker-compose
-    shell: |
-       usermod -aG docker $USER
-       curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-       chmod +x /usr/local/bin/docker-compose
+  - debug: var=dc.stdout_lines
