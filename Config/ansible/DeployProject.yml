@@ -19,8 +19,7 @@
   - name: Copy Files for docker-compose proxy build
     copy:
       src: "{{ dcSource }}"
-      dest: "~"
-      remote_src: yes
+      dest: /home/ec2-user
       owner: ec2-user
       mode: '0600'
     
