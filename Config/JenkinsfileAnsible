@@ -46,9 +46,9 @@ pipeline {
                     inventory: '/etc/ansible/ec2.py',
                     playbook: '${configFolder}ansible/DeployProject.yml',
                     extrasVars: [
-					    build: "${BUILD_NUMBER}"
-						repo: "${dhAppRegistry}"
-						dcSource: "${configFolder}${composeFolder}"
+					    build: '${BUILD_NUMBER}'
+						repo: '${dhAppRegistry}'
+						dcSource: "${configFolder}${composeFolder}'
 					],
 					hostKeyChecking : 'false'
 				)
