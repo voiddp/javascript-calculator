@@ -1,5 +1,6 @@
 pipeline {
 	environment {
+	    PATH = '/usr/local/bin/:$PATH'
 		dhAppRegistry = 'voiddp/nginx-calc'
 		dhRegistryCredential = 'dockerhub'
 		ec2Credential='jenkins-ec2'
@@ -44,7 +45,7 @@ pipeline {
                     credentialsId: 'awsKey',
                     inventory: '/etc/ansible/ec2.py',
                     playbook: '${configFolder}ansible/DeployProject.yml',
-                    extras: '--extra-vars build=${dhAppRegistry}:${BUILD_NUMBER} dcSource=${configFolder}${composeFolder}'
+                    extras: '--extra-vars build=${BUILD_NUMBER} repo=${dhAppRegistry} dcSource=${configFolder}${composeFolder}'
 				)
 			}
 		}
