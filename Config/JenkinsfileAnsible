@@ -9,6 +9,7 @@ pipeline {
 		ansibleFolder = 'ansible/'
 	}
   agent any
+  stages {
     stage('Processing Files') {
       steps {
           sh 'chmod +x ./${configFolder}*.sh'
@@ -43,4 +44,5 @@ pipeline {
 			}
 		}
 	}
+  }
 }
