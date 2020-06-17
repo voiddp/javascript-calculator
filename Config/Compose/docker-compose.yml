@@ -5,6 +5,11 @@ services:
      container_name: calc
      ports:
       - 3000:80
+     healthcheck:
+       test: curl -sS http://127.0.0.1 || echo 1
+       interval: 5s
+       timeout: 10s
+       retries: 3
    proxy:
      build:
        context: .
@@ -14,3 +19,8 @@ services:
       - 80:80
      links:
       - calc
+     healthcheck:
+       test: curl -sS http://127.0.0.1 || echo 1
+       interval: 5s
+       timeout: 10s
+       retries: 3

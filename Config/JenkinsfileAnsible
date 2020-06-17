@@ -18,7 +18,7 @@ pipeline {
     }
 	stage('Bulding Image') {
       steps {
-	   sh './${configFolder}build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile .'
+	   sh './${configFolder}build.sh build ${dhAppRegistry}:${BUILD_NUMBER} ./${configFolder}${appFolder}Dockerfile ./Build'
       }
     }	
 	stage('Push to Hub') {
